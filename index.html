@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion News</title>
+</head>
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        .card {
+            width: 250px;
+            height: 350px;
+            perspective: 1000px;
+        }
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front,
+        .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+        .card-front {
+            background-color: white;
+        }
+        .card-front img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .card-front h3 {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+        .card-front p {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #777;
+        }
+        .button, .back-btn {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .button:hover, .back-btn:hover {
+            background-color: #0056b3;
+        }
+        .card-back {
+            background-color: #007bff;
+            color: white;
+            transform: rotateY(180deg);
+        }
+        .card-back p {
+            font-size: 16px;
+            padding: 10px;
+        }
+    </style>
+    <div class="container"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.querySelector(".container");
+            
+            const newsData = [
+    { 
+        "title": "U.S. Economy Shows Signs of Growth", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "The U.S. economy sees steady expansion.", 
+        "details": "Economic indicators show positive growth as consumer spending and job numbers rise." 
+    },
+    { 
+        "title": "Congress Debates New Budget Proposal", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Lawmakers discuss government spending for the upcoming fiscal year.", 
+        "details": "The proposed budget aims to balance economic growth with federal spending cuts." 
+    },
+    { 
+        "title": "Severe Storms Hit the East Coast", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Heavy rain and strong winds impact multiple states.", 
+        "details": "Authorities have issued warnings as extreme weather causes flooding and power outages." 
+    },
+    { 
+        "title": "Tech Giants Face New Antitrust Lawsuit", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "U.S. regulators take action against major tech firms.", 
+        "details": "The government is cracking down on monopolistic practices in the tech industry." 
+    },
+    { 
+        "title": "NASA Prepares for Moon Mission", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "NASA plans next steps in lunar exploration.", 
+        "details": "The Artemis program is set to send astronauts back to the Moon for scientific research." 
+    },
+    { 
+        "title": "Stock Market Surges After Positive Jobs Report", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Wall Street reacts to strong employment numbers.", 
+        "details": "The latest job data has boosted investor confidence, leading to a market rally." 
+    },
+    { 
+        "title": "California Faces Wildfire Threats", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "High temperatures and dry conditions fuel wildfires.", 
+        "details": "Firefighters are battling multiple blazes across the state as evacuation orders are issued." 
+    },
+    { 
+        "title": "Supreme Court Hears Landmark Case on Privacy Rights", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Justices consider implications of new digital privacy laws.", 
+        "details": "The case could set a major precedent for online privacy and government surveillance." 
+    },
+    { 
+        "title": "Hollywood Writers Strike Ends with New Agreement", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Writers reach a deal with studios after months of negotiations.", 
+        "details": "The agreement includes higher pay and protections for scriptwriters in the entertainment industry." 
+    },
+    { 
+        "title": "Texas Border Policy Sparks Debate", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "New immigration measures divide lawmakers.", 
+        "details": "State and federal officials clash over policies aimed at controlling illegal border crossings." 
+    },
+    { 
+        "title": "Gas Prices Drop Across the U.S.", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Fuel costs decline amid changing oil markets.", 
+        "details": "Drivers are seeing relief at the pump as global oil prices fluctuate." 
+    },
+    { 
+        "title": "FBI Warns of Rising Cyber Threats", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Federal agencies caution businesses about cyberattacks.", 
+        "details": "Officials urge companies to strengthen digital security as online threats increase." 
+    },
+    { 
+        "title": "U.S. Job Market Remains Strong", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Unemployment stays low as hiring continues.", 
+        "details": "The latest employment report shows steady job growth in multiple industries." 
+    },
+    { 
+        "title": "Florida Prepares for Hurricane Season", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "State officials urge residents to stay prepared.", 
+        "details": "Meteorologists predict an active hurricane season with potential major storms." 
+    },
+    { 
+        "title": "Medical Breakthrough Offers New Hope for Diabetes Patients", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Scientists develop new treatment for diabetes management.", 
+        "details": "A breakthrough drug has shown promising results in regulating blood sugar levels." 
+    },
+    { 
+        "title": "New York City Unveils Green Energy Initiative", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "City officials push for more sustainable energy solutions.", 
+        "details": "Plans include increased investment in solar and wind energy to reduce carbon emissions." 
+    },
+    { 
+        "title": "U.S. Expands Trade Agreements with Asia", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "New trade deals aim to boost economic ties.", 
+        "details": "The Biden administration is strengthening trade partnerships to enhance global commerce." 
+    },
+    { 
+        "title": "NBA Finals: Teams Prepare for Championship Showdown", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Top basketball teams face off in the Finals.", 
+        "details": "With intense competition, this year's NBA Finals are set to be one of the most exciting in recent history." 
+    }
+]
+         
+            for (let i = 0; i < 18; i++) {
+                const news = newsData[i % newsData.length];
+                const card = document.createElement("div");
+                card.classList.add("card");
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="${news.image}" alt="Image ${i + 1}">
+                            <h3>${news.title}</h3>
+                            <p>${news.shortDescription}</p>
+                            <button class="button">View Details</button>
+                        </div>
+                        <div class="card-back">
+                            <p>${news.details}</p>
+                            <button class="back-btn">Back</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+                card.querySelector(".button").addEventListener("click", function() {
+                    card.classList.add("flipped");
+                });
+                card.querySelector(".back-btn").addEventListener("click", function() {
+                    card.classList.remove("flipped");
+                });
+            }
+        });
+    </script>
+</body>
+</html>
